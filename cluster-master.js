@@ -351,6 +351,8 @@ function restart (cb) {
 
     if (quitting) {
       if (worker && worker.process.connected) {
+        debug("sending a shutdown")
+        worker.send('shutdown');
         worker.disconnect()
       }
       return graceful()
@@ -362,6 +364,8 @@ function restart (cb) {
         var timer = setTimeout(function () {
           newbie.removeListener('exit', skeptic)
           if (worker && worker.process.connected) {
+            debug("sending a shutdown")
+            worker.send('shutdown');
             worker.disconnect()
           }
           graceful()
@@ -376,6 +380,8 @@ function restart (cb) {
     } else {
       cluster.once('listening', function (newbie) {
         if (worker && worker.process.connected) {
+          debug("sending a shutdown")
+          worker.send('shutdown');
           worker.disconnect()
         }
       })
@@ -457,6 +463,8 @@ function resize (n, cb_) {
     debug('resizing down', current[i])
     worker.once('exit', then())
     if (worker && worker.process.connected) {
+      debug("sending a shutdown")
+      worker.send('shutdown');
       worker.disconnect()
     }
   }
